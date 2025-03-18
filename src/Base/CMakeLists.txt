@@ -1,3 +1,5 @@
+add_library(FreeCADBase SHARED)
+
 if(WIN32)
     add_definitions(-DFCBase)
     add_definitions(-DPYCXX_DLL)
@@ -5,16 +7,26 @@ if(WIN32)
     add_definitions(-DZIPIOS_UTF8)
 endif(WIN32)
 
+if(BUILD_TRACY_FRAME_PROFILER)
+    add_definitions(-DBUILD_TRACY_FRAME_PROFILER)
+endif()
+
 include_directories(
     ${CMAKE_BINARY_DIR}/src
     ${CMAKE_SOURCE_DIR}/src
     ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+target_include_directories(
+    FreeCADBase
+    SYSTEM
+    PUBLIC
     ${Boost_INCLUDE_DIRS}
+    ${PYCXX_INCLUDE_DIR}
     ${Python3_INCLUDE_DIRS}
     ${XercesC_INCLUDE_DIRS}
     ${ZLIB_INCLUDE_DIR}
-    ${PYCXX_INCLUDE_DIR}
     ${ZIPIOS_INCLUDES}
 )
 
@@ -60,6 +72,11 @@ endif(MSVC)
 include_directories(
     ${QtCore_INCLUDE_DIRS}
 )
+
+if(BUILD_TRACY_FRAME_PROFILER)
+    list(APPEND FreeCADBase_LIBS TracyClient)
+endif()
+
 list(APPEND FreeCADBase_LIBS ${QtCore_LIBRARIES})
 
 list(APPEND FreeCADBase_LIBS fmt::fmt)
@@ -74,18 +91,31 @@ if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
 endif()
 
 generate_from_xml(TypePy)
+generate_from_py(Type)
 generate_from_xml(BaseClassPy)
+generate_from_py(BaseClass)
 generate_from_xml(BoundBoxPy)
+generate_from_py(BoundBox)
 generate_from_xml(CoordinateSystemPy)
+generate_from_py(CoordinateSystem)
 generate_from_xml(PersistencePy)
+generate_from_py(Persistence)
 generate_from_xml(VectorPy)
+generate_from_py(Vector)
 generate_from_xml(MatrixPy)
+generate_from_py(Matrix)
 generate_from_xml(RotationPy)
+generate_from_py(Rotation)
 generate_from_xml(PlacementPy)
+generate_from_py(Placement)
 generate_from_xml(AxisPy)
+generate_from_py(Axis)
 generate_from_xml(UnitPy)
+generate_from_py(Unit)
 generate_from_xml(QuantityPy)
+generate_from_py(Quantity)
 generate_from_xml(PrecisionPy)
+generate_from_py(Precision)
 generate_from_any(Parameter.xsd Parameter.inl xmlSchemeString)
 
 if(SWIG_FOUND)
@@ -173,6 +203,7 @@ SET(FreeCADBase_CPP_SRCS
     Builder3D.cpp
     Console.cpp
     ConsoleObserver.cpp
+    Color.cpp
     CoordinateSystem.cpp
     CoordinateSystemPyImp.cpp
     Debugger.cpp
@@ -202,7 +233,6 @@ SET(FreeCADBase_CPP_SRCS
     PyExport.cpp
     PyObjectBase.cpp
     PythonTypeExt.cpp
-    QtTools.cpp
     Reader.cpp
     Rotation.cpp
     RotationPyImp.cpp
@@ -244,6 +274,7 @@ SET(FreeCADBase_HPP_SRCS
     Console.h
     ConsoleObserver.h
     Converter.h
+    Color.h
     CoordinateSystem.h
     Debugger.h
     DualNumber.h
@@ -269,7 +300,6 @@ SET(FreeCADBase_HPP_SRCS
     PyObjectBase.h
     PyWrapParseTupleAndKeywords.h
     PythonTypeExt.h
-    QtTools.h
     Reader.h
     Rotation.h
     ServiceProvider.h
@@ -326,8 +356,7 @@ if(FREECAD_USE_PCH)
     ADD_MSVC_PRECOMPILED_HEADER(FreeCADBase PreCompiled.h PreCompiled.cpp FreeCADBase_CPP_SRCS)
 endif(FREECAD_USE_PCH)
 
-add_library(FreeCADBase SHARED ${FreeCADBase_SRCS})
-
+target_sources(FreeCADBase PRIVATE ${FreeCADBase_SRCS})
 target_link_libraries(FreeCADBase ${FreeCADBase_LIBS})
 if (FREECAD_WARN_ERROR)
     target_compile_warn_error(FreeCADBase)
