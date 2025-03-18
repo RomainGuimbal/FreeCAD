@@ -1017,7 +1017,7 @@ QSpinBox {
 QAbstractSpinBox:up-button {
   background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #444444, stop:1 #333333);
   subcontrol-origin: border;
-  subcontrol-position: top right;
+  subcontrol-position: left top;
   border-top: 1px solid transparent;
   border-right: 1px solid transparent;
   border-bottom: 1px solid #020202;
@@ -1025,6 +1025,7 @@ QAbstractSpinBox:up-button {
   border-left: 1px solid #020202;
   margin:1px;
   margin-bottom:-1px;
+
 }
 
 QAbstractSpinBox:up-button:disabled {
@@ -1046,7 +1047,7 @@ QAbstractSpinBox::up-arrow:hover {
 QAbstractSpinBox:down-button {
   background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #444444, stop:1 #333333);
   subcontrol-origin: border;
-  subcontrol-position: bottom right;
+  subcontrol-position: top right;
   border-bottom: 1px solid transparent;
   border-right: 1px solid transparent;
   border-top: 1px solid #020202;

@@ -483,6 +483,9 @@ protected:
     virtual void focusOutEvent(QFocusEvent* event);
     virtual void keyPressEvent(QKeyEvent* event);
     virtual void resizeEvent(QResizeEvent* event);
+    virtual void mousePressEvent(QMouseEvent *event);
+    virtual void mouseMoveEvent(QMouseEvent *event);
+    virtual void mouseReleaseEvent(QMouseEvent *event);
 
 private:
     void updateText(const Base::Quantity&);
@@ -514,6 +517,9 @@ private:
     QScopedPointer<QuantitySpinBoxPrivate> d_ptr;
     Q_DISABLE_COPY(QuantitySpinBox)
     Q_DECLARE_PRIVATE(QuantitySpinBox)
+
+    bool dragging;
+    QPoint lastMousePos;
 };
 
 // ------------------------------------------------------------------------------

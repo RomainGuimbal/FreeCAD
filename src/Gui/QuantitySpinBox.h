@@ -161,6 +161,9 @@ protected:
     void keyPressEvent(QKeyEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
     void paintEvent(QPaintEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
 
 private:
     void validateInput() override;
@@ -195,6 +198,9 @@ private:
     QScopedPointer<QuantitySpinBoxPrivate> d_ptr;
     Q_DISABLE_COPY(QuantitySpinBox)
     Q_DECLARE_PRIVATE(QuantitySpinBox)
+
+    bool dragging;
+    QPoint lastMousePos;
 };
 
 } // namespace Gui

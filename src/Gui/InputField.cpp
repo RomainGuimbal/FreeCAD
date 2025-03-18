@@ -85,7 +85,7 @@ InputField::InputField(QWidget * parent)
         setFocusPolicy(Qt::StrongFocus);
     }
     iconLabel = new ExpressionLabel(this);
-    iconLabel->setCursor(Qt::ArrowCursor);
+    iconLabel->setCursor(Qt::CrossCursor);
     QPixmap pixmap = getValidationIcon(":/icons/button_valid.svg", QSize(sizeHint().height(),sizeHint().height()));
     iconLabel->setPixmap(pixmap);
     iconLabel->setStyleSheet(QStringLiteral("QLabel { border: none; padding: 0px; }"));
@@ -706,6 +706,61 @@ void InputField::wheelEvent (QWheelEvent * event)
     selectNumber();
     event->accept();
 }
+
+
+
+
+
+
+
+
+
+
+
+void InputField::mousePressEvent(QMouseEvent *event)
+{
+    if (event->button() == Qt::LeftButton){
+        dragging = true;
+        lastMousePos = event->globalPos();
+    }
+
+    QLineEdit::mousePressEvent(event);
+}
+
+void InputField::mouseMoveEvent(QMouseEvent* event)
+{
+    if (dragging){
+        QPoint currentPos = event->globalPos();
+        double delta = currentPos.x() - lastMousePos.x();
+        setValue(rawValue() + delta);
+        lastMousePos = currentPos;
+    }
+
+    QLineEdit::mouseMoveEvent(event);
+}
+
+void InputField::mouseReleaseEvent(QMouseEvent* event)
+{
+    if (event->button() == Qt::LeftButton){
+        dragging = false;
+    }
+
+    QLineEdit::mouseReleaseEvent(event);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 void InputField::fixup(QString& input) const
 {

@@ -33,6 +33,7 @@
 # include <QStyle>
 # include <QStyleOptionSpinBox>
 # include <QToolTip>
+# include <QMouseEvent>
 #endif
 
 #include <sstream>
@@ -934,6 +935,72 @@ void QuantitySpinBox::selectNumber()
         lineEdit()->setSelection(0, rmatch.capturedLength());
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+void QuantitySpinBox::mousePressEvent(QMouseEvent *event)
+{
+    if (event->button() == Qt::LeftButton)
+    {
+        dragging = true;
+        lastMousePos = event->globalPos();
+    }
+
+    QAbstractSpinBox::mousePressEvent(event);
+}
+
+void QuantitySpinBox::mouseMoveEvent(QMouseEvent* event)
+{
+    if (dragging)
+    {
+        QPoint currentPos = event->globalPos();
+        double delta = currentPos.x() - lastMousePos.x();
+        setValue(rawValue() + delta);
+        lastMousePos = currentPos;
+    }
+
+    setCursor(Qt::CrossCursor);
+
+    // QAbstractSpinBox::mouseMoveEvent(event);
+}
+
+void QuantitySpinBox::mouseReleaseEvent(QMouseEvent* event)
+{
+    if (event->button() == Qt::LeftButton)
+    {
+        dragging = false;
+    }
+
+    QAbstractSpinBox::mouseReleaseEvent(event);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 QString QuantitySpinBox::textFromValue(const Base::Quantity& value) const
 {

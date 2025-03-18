@@ -201,6 +201,9 @@ protected:
     void wheelEvent(QWheelEvent * event) override;
     void contextMenuEvent(QContextMenuEvent * event) override;
     void resizeEvent(QResizeEvent*) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
 
 private:
     QPixmap getValidationIcon(const char* name, const QSize& size) const;
@@ -225,6 +228,9 @@ private:
     int SaveSize;
 
     QPalette defaultPalette;
+
+    bool dragging;
+    QPoint lastMousePos;
 };
 
 } // namespace Gui
