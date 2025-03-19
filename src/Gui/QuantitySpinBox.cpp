@@ -34,6 +34,7 @@
 # include <QStyleOptionSpinBox>
 # include <QToolTip>
 # include <QMouseEvent>
+# include <QMouseEvent>
 #endif
 
 #include <sstream>
