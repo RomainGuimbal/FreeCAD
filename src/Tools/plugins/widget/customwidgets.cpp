@@ -1263,6 +1263,73 @@ void QuantitySpinBox::focusOutEvent(QFocusEvent* event)
     QAbstractSpinBox::focusOutEvent(event);
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+void QuantitySpinBox::mousePressEvent(QMouseEvent *event)
+{
+    qDebug() << "Mouse Press Event";
+    if (event->button() == Qt::LeftButton)
+    {
+        dragging = true;
+        lastMousePos = event->globalPos();
+    }
+
+    QAbstractSpinBox::mousePressEvent(event);
+}
+
+void QuantitySpinBox::mouseMoveEvent(QMouseEvent* event)
+{
+    if (dragging)
+    {
+        QPoint currentPos = event->globalPos();
+        double delta = currentPos.x() - lastMousePos.x();
+        setValue(rawValue() + delta);
+        lastMousePos = currentPos;
+    }
+
+    QAbstractSpinBox::mouseMoveEvent(event);
+}
+
+void QuantitySpinBox::mouseReleaseEvent(QMouseEvent* event)
+{
+    if (event->button() == Qt::LeftButton)
+    {
+        dragging = false;
+    }
+
+    QAbstractSpinBox::mouseReleaseEvent(event);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 void QuantitySpinBox::clear()
 {
     QAbstractSpinBox::clear();
