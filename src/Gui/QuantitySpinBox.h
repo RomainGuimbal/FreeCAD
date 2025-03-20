@@ -202,9 +202,6 @@ private:
 
     bool dragging;
     QPoint lastMousePos;
-
-    bool dragging;
-    QPoint lastMousePos;
 };
 
 } // namespace Gui
