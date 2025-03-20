@@ -1005,82 +1005,59 @@ QToolButton#qt_toolbar_ext_button:on {
 --------------------------------------------------------------------------- */
 QAbstractSpinBox,
 QSpinBox {
-  background-color: #252525;
-  border: 1px solid #020202;
+  background-color: #474747;
+  border: 1px solid #2d2d2d;
   color: white;
-  border-radius: 2px;
+  border-radius: 6px;
   min-height: 24px;
   padding-left: 4px;
   padding-right: 4px;
 }
 
 QAbstractSpinBox:up-button {
-  background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #444444, stop:1 #333333);
-  subcontrol-origin: border;
-  subcontrol-position: left top;
-  border-top: 1px solid transparent;
-  border-right: 1px solid transparent;
-  border-bottom: 1px solid #020202;
-  border-top-right-radius: 2px;
-  border-left: 1px solid #020202;
-  margin:1px;
-  margin-bottom:-1px;
-
-}
-
-QAbstractSpinBox:up-button:disabled {
-  background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #333333, stop:1 #444444);
+  background-color: transparent;
+  subcontrol-position: left center;
 }
 
 QAbstractSpinBox::up-arrow, QAbstractSpinBox::up-arrow:disabled, QAbstractSpinBox::up-arrow:off {
   image: url(qss:images_classic/arrow-up-lightgray.png);
-  height: 8px;
-  width: 8px;
+  height: 24px;
+  width: 16px;
 }
 
 QAbstractSpinBox::up-arrow:hover {
   image: url(qss:images_classic/arrow-up-white.png);
-  height: 8px;
-  width: 8px;
+  height: 24px;
+  width: 16px;
 }
 
 QAbstractSpinBox:down-button {
-  background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #444444, stop:1 #333333);
-  subcontrol-origin: border;
-  subcontrol-position: top right;
-  border-bottom: 1px solid transparent;
-  border-right: 1px solid transparent;
-  border-top: 1px solid #020202;
-  border-bottom-right-radius: 2px;
-  border-left: 1px solid #020202;
-  margin:1px;
-  margin-top:-1px;
-}
-
-QAbstractSpinBox:down-button:disabled {
-  background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #333333, stop:1 #444444);
+  background-color: transparent;
+  subcontrol-position: right center;
 }
 
 QAbstractSpinBox::down-arrow, QAbstractSpinBox::down-arrow:disabled, QAbstractSpinBox::down-arrow:off {
   image: url(qss:images_classic/arrow-down-lightgray.png);
-  height: 8px;
-  width: 8px;
+  height: 24px;
+  width: 16px;
 }
 
 QAbstractSpinBox::down-arrow:hover {
   image: url(qss:images_classic/arrow-down-white.png);
-  height: 8px;
-  width: 8px;
+  height: 24px;
+  width: 16px;
 }
 
 QAbstractSpinBox:disabled {
-  background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #333333, stop:1 #444444);
+  background-color: #6a6a6a;
 }
 
 QAbstractSpinBox:hover {
+  background-color: #4d4d4d;
 }
 
 QAbstractSpinBox:focus {
+
   border: 1px solid @ThemeAccentColor2;
 }
 

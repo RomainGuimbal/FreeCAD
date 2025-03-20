@@ -201,6 +201,8 @@ private:
     Q_DECLARE_PRIVATE(QuantitySpinBox)
 
     bool dragging;
+    bool stepped;
+    bool precision;
     QPoint lastMousePos;
 };
 

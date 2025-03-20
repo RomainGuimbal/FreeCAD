@@ -418,6 +418,14 @@ void Gui::QuantitySpinBox::keyPressEvent(QKeyEvent* event)
 
     if (!handleKeyEvent(event->text())) {
         QAbstractSpinBox::keyPressEvent(event);
+    }    
+
+    if(event->key() == Qt::Key_Control && dragging){
+        stepped = true;
+    }
+
+    if(event->key() == Qt::Key_Shift && dragging){
+        precision = true;
     }
 }
 
@@ -937,25 +945,13 @@ void QuantitySpinBox::selectNumber()
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
 void QuantitySpinBox::mousePressEvent(QMouseEvent *event)
 {
-    if (event->button() == Qt::LeftButton)
-    {
-        dragging = true;
-        lastMousePos = event->globalPos();
-    }
+    // if (event->button() == Qt::LeftButton)
+    // {
+    dragging = true;
+    lastMousePos = event->globalPos();
+    // }
 
     QAbstractSpinBox::mousePressEvent(event);
 }
@@ -965,22 +961,32 @@ void QuantitySpinBox::mouseMoveEvent(QMouseEvent* event)
     if (dragging)
     {
         QPoint currentPos = event->globalPos();
-        double delta = (currentPos.x() - lastMousePos.x()) * 0.1;
-        setValue(rawValue() + delta);
+        double delta;
+        if(stepped){
+            setValue(int(rawValue()) + (currentPos.x() - lastMousePos.x()));
+        } else {
+            if (precision){
+            delta = (currentPos.x() - lastMousePos.x()) * 0.01;
+            } else {
+            delta = (currentPos.x() - lastMousePos.x()) * 0.1;
+            setValue(rawValue() + delta);
+            }
+        }
+        
         lastMousePos = currentPos;
     }
 
     setCursor(Qt::CrossCursor);
-
-    // QAbstractSpinBox::mouseMoveEvent(event);
 }
 
 void QuantitySpinBox::mouseReleaseEvent(QMouseEvent* event)
 {
-    if (event->button() == Qt::LeftButton)
-    {
-        dragging = false;
-    }
+    // if (event->button() == Qt::LeftButton)
+    // {
+    dragging = false;
+    precision = false;
+    stepped = false;
+    // }
 
     QAbstractSpinBox::mouseReleaseEvent(event);
 }
@@ -989,35 +995,6 @@ void QuantitySpinBox::timerEvent(QTimerEvent *event)
 {
     event->ignore();
 }
-
-
-
-// #include <QCursor>
-
-// QuantitySpinBox::QuantitySpinBox(QWidget *parent) : QSpinBox(parent) {
-
-//     QLineEdit *le = lineEdit();
-//     if (le) {
-//         le->setCursor(Qt::CrossCursor); 
-//     }
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 QString QuantitySpinBox::textFromValue(const Base::Quantity& value) const
 {
