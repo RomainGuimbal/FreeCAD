@@ -947,13 +947,13 @@ void QuantitySpinBox::selectNumber()
 
 void QuantitySpinBox::mousePressEvent(QMouseEvent *event)
 {
-    // if (event->button() == Qt::LeftButton)
-    // {
     dragging = true;
     lastMousePos = event->globalPos();
-    // }
-
-    QAbstractSpinBox::mousePressEvent(event);
+    initialMousePos = event->globalPos();
+    initialValue = rawValue();
+    QApplication::setOverrideCursor(Qt::BlankCursor);
+    grabMouse();
+    event->accept();
 }
 
 void QuantitySpinBox::mouseMoveEvent(QMouseEvent* event)
@@ -961,6 +961,11 @@ void QuantitySpinBox::mouseMoveEvent(QMouseEvent* event)
     if (dragging)
     {
         QPoint currentPos = event->globalPos();
+        if (currentPos == initialMousePos) {
+            event->accept();
+            return; // Ignore reset-generated events
+        }
+
         double delta;
         if(stepped){
             setValue(int(rawValue()) + (currentPos.x() - lastMousePos.x()));
@@ -972,21 +977,20 @@ void QuantitySpinBox::mouseMoveEvent(QMouseEvent* event)
             setValue(rawValue() + delta);
             }
         }
-        
-        lastMousePos = currentPos;
+        QCursor::setPos(initialMousePos); // Reset cursor for infinite drag
+        event->accept();
     }
-
-    setCursor(Qt::CrossCursor);
 }
 
 void QuantitySpinBox::mouseReleaseEvent(QMouseEvent* event)
 {
-    // if (event->button() == Qt::LeftButton)
-    // {
     dragging = false;
     precision = false;
     stepped = false;
-    // }
+    QApplication::restoreOverrideCursor(); // Restore cursor
+    releaseMouse();
+    QCursor::setPos(initialMousePos); // Optional: snap cursor back to start
+    event->accept();
 
     QAbstractSpinBox::mouseReleaseEvent(event);
 }

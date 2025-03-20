@@ -203,7 +203,12 @@ private:
     bool dragging;
     bool stepped;
     bool precision;
+    int initialValue;
     QPoint lastMousePos;
+    QPoint initialMousePos;
+
+
+
 };
 
 } // namespace Gui
