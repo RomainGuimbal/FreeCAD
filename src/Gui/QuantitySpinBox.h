@@ -159,12 +159,14 @@ protected:
     void focusInEvent(QFocusEvent * event) override;
     void focusOutEvent(QFocusEvent * event) override;
     void keyPressEvent(QKeyEvent *event) override;
+    void keyReleaseEvent(QKeyEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
     void paintEvent(QPaintEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
     void timerEvent(QTimerEvent *event) override;
+    bool eventFilter(QObject *obj, QEvent *event) override;
 
 private:
     void validateInput() override;
@@ -203,6 +205,7 @@ private:
     bool dragging;
     bool stepped;
     bool precision;
+    bool m_lineEditPressed;
     int initialValue;
     QPoint lastMousePos;
     QPoint initialMousePos;

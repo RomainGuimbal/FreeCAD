@@ -34,7 +34,6 @@
 # include <QStyleOptionSpinBox>
 # include <QToolTip>
 # include <QMouseEvent>
-# include <QMouseEvent>
 #endif
 
 #include <sstream>
@@ -285,6 +284,8 @@ QuantitySpinBox::QuantitySpinBox(QWidget *parent)
         this->handlePendingEmit(true);
     });
 
+    lineEdit()->installEventFilter(this);
+
     // When a style sheet is set the text margins for top/bottom must be set to avoid to squash the widget
 #ifndef Q_OS_MAC
     lineEdit()->setTextMargins(0, 2, 0, 2);
@@ -426,6 +427,17 @@ void Gui::QuantitySpinBox::keyPressEvent(QKeyEvent* event)
 
     if(event->key() == Qt::Key_Shift && dragging){
         precision = true;
+    }
+}
+
+void Gui::QuantitySpinBox::keyReleaseEvent(QKeyEvent* event)
+{
+    if (event->key() == Qt::Key_Control) {
+        stepped = false;
+    }
+
+    if(event->key() == Qt::Key_Shift){
+        precision = false;
     }
 }
 
@@ -945,6 +957,43 @@ void QuantitySpinBox::selectNumber()
     }
 }
 
+bool QuantitySpinBox::eventFilter(QObject *obj, QEvent *event) {
+    if (obj == lineEdit()) {
+        if (event->type() == QEvent::MouseButtonPress) {
+            // Block the line edit's mouse press
+            m_lineEditPressed = true; // Track that the press occurred
+            return true; // Suppress the event
+        } else if (event->type() == QEvent::MouseButtonRelease && m_lineEditPressed) {
+            QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
+            // Map the position to the spin box's coordinate system
+            QPoint pos = lineEdit()->mapTo(this, mouseEvent->pos());
+            // Simulate a mouse press on the spin box at the release position
+            QMouseEvent simulatedPressEvent(
+                QEvent::MouseButtonPress, 
+                pos, 
+                mouseEvent->button(), 
+                mouseEvent->buttons(), 
+                mouseEvent->modifiers()
+            );
+            mousePressEvent(&simulatedPressEvent); // Trigger spin box's press logic
+            
+            // Optionally, trigger the spin box's release logic
+            QMouseEvent simulatedReleaseEvent(
+                QEvent::MouseButtonRelease, 
+                pos, 
+                mouseEvent->button(), 
+                mouseEvent->buttons(), 
+                mouseEvent->modifiers()
+            );
+            mouseReleaseEvent(&simulatedReleaseEvent);
+            
+            m_lineEditPressed = false; // Reset tracking
+            return true; // Block the line edit's default release behavior
+        }
+    }
+    return QAbstractSpinBox::eventFilter(obj, event);
+}
+
 void QuantitySpinBox::mousePressEvent(QMouseEvent *event)
 {
     dragging = true;
@@ -968,13 +1017,13 @@ void QuantitySpinBox::mouseMoveEvent(QMouseEvent* event)
 
         double delta;
         if(stepped){
-            setValue(int(rawValue()) + (currentPos.x() - lastMousePos.x()));
+            setValue(float(int(rawValue()) + int((currentPos.x() - lastMousePos.x())*0.1)));
         } else {
             if (precision){
-            delta = (currentPos.x() - lastMousePos.x()) * 0.01;
+                delta = (currentPos.x() - lastMousePos.x()) * 0.001;
             } else {
-            delta = (currentPos.x() - lastMousePos.x()) * 0.1;
-            setValue(rawValue() + delta);
+                delta = (currentPos.x() - lastMousePos.x()) * 0.1;
+                setValue(rawValue() + delta);
             }
         }
         QCursor::setPos(initialMousePos); // Reset cursor for infinite drag
